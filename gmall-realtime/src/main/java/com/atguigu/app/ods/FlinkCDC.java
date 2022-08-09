@@ -17,20 +17,20 @@ public class FlinkCDC {
         // 1. 获取执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setParallelism(1);
-//        env.enableCheckpointing(5000);
-//        env.getCheckpointConfig().setCheckpointTimeout(100000L);
-//        env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
-//        env.getCheckpointConfig().enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
-//        env.setRestartStrategy(RestartStrategies.fixedDelayRestart(3,5000L));
-//        env.setStateBackend(new FsStateBackend("hdfs://hadoop200:8020/gmall-flink-201109/ck"));
-//        System.setProperty("HADOOP_USER_NAME", "root");
+        env.enableCheckpointing(5 * 60000L, CheckpointingMode.EXACTLY_ONCE);
+        env.getCheckpointConfig().setCheckpointTimeout(10 * 60000L);
+        env.getCheckpointConfig().setMaxConcurrentCheckpoints(2);
+        env.getCheckpointConfig().enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION);
+        env.setRestartStrategy(RestartStrategies.fixedDelayRestart(3,5000L));
+        env.setStateBackend(new FsStateBackend("hdfs://ambari01:8020/flinkCK/gmall"));
+        System.setProperty("HADOOP_USER_NAME", "hdfs");
         // 2. 使用cdc作为source 读取mysql变化数据
         DebeziumSourceFunction<String> debeziumSourceFunction = MySQLSource
                 .<String>builder()
-                .hostname("hadoop200")
+                .hostname("ambari01")
                 .port(3306)
                 .username("root")
-                .password("Hd7502002$")
+                .password("Hd7502002")
                 .databaseList("gmall-flink-201109")
                 .startupOptions(StartupOptions.latest())
                 .deserializer(new MyDeserializerFunc())

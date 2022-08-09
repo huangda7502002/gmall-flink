@@ -12,10 +12,10 @@ import java.util.Properties;
 public class MyKafkaUtil {
 
     private static Properties properties = new Properties();
-    private static String DEFAULT_TOPIC = "dwd_default_topic";
+    private static String DEFAULT_TOPIC = "default_topic";
 
-    static  {
-        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "hadoop200:9092,hadoop201:9092,hadoop202:9092");
+    static {
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "ambari01:6667,ambari01:6667,ambari01:6667");
     }
 
     public static FlinkKafkaProducer<String> getFlinkKafkaProducer(String topic) {

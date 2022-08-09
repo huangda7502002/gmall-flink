@@ -31,25 +31,24 @@ public class DimApp {
     public static void main(String[] args) throws Exception {
         // 1. 获取执行环境
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setParallelism(1);
 
 //        //状态后端设置
-//        env.enableCheckpointing(3000L, CheckpointingMode.EXACTLY_ONCE);
-//        env.getCheckpointConfig().setCheckpointTimeout(60 * 1000L);
-//        env.getCheckpointConfig().setMinPauseBetweenCheckpoints(3000L);
-//        env.getCheckpointConfig().enableExternalizedCheckpoints(
-//                CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION
-//        );
-//        env.setRestartStrategy(RestartStrategies.failureRateRestart(
-//                10, Time.of(1L, TimeUnit.DAYS), Time.of(3L, TimeUnit.MINUTES)
-//        ));
-//        env.setStateBackend(new HashMapStateBackend());
-//        env.getCheckpointConfig().setCheckpointStorage("hdfs://ambari01:8020/gmall/ck");
-//        System.setProperty("HADOOP_USER_NAME", "hdfs");
+        env.enableCheckpointing(3000L, CheckpointingMode.EXACTLY_ONCE);
+        env.getCheckpointConfig().setCheckpointTimeout(60 * 1000L);
+        env.getCheckpointConfig().setMinPauseBetweenCheckpoints(3000L);
+        env.getCheckpointConfig().enableExternalizedCheckpoints(
+                CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION
+        );
+        env.setRestartStrategy(RestartStrategies.failureRateRestart(
+                10, Time.of(1L, TimeUnit.DAYS), Time.of(3L, TimeUnit.MINUTES)
+        ));
+        env.setStateBackend(new HashMapStateBackend());
+        env.getCheckpointConfig().setCheckpointStorage("hdfs://ambari01:8020/gmall/ck");
+        System.setProperty("HADOOP_USER_NAME", "hdfs");
 
         //TODO 2.读取Kafka topic_db 主题数据创建流
         String topic = "topic_db";
-        String groupId = "dim_app_211126";
+        String groupId = "app_211126";
 
         DataStreamSource<String> kafkaDS = env.addSource(MyKafkaUtil.getFlinkKafkaConsumer(topic, groupId));
 
